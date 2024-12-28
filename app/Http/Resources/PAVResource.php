@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PropertyClassificationResource extends JsonResource
+class PAVResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,8 +16,12 @@ class PropertyClassificationResource extends JsonResource
     {
         //return parent::toArray($request);
         return [
-            'id'=>$this->id,
-            'className'=>$this->class_name
+            "assessedAmount"=>$this->assessed_amount,
+            "valueRate"=>$this->value_rate,
+            "occupancy"=>$this->occupancy,
+            "pavCode"=>$this->pav_code,
+            "zones"=>$this->zones,
+            "className"=>$this->getClass->class_name,
         ];
     }
 }

@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PropertyClassificationResource extends JsonResource
+class SyncResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,8 +16,10 @@ class PropertyClassificationResource extends JsonResource
     {
         //return parent::toArray($request);
         return [
-            'id'=>$this->id,
-            'className'=>$this->class_name
+          "gis"=>$this->g_gis,
+            "labs"=>$this->k_labs,
+            "lastSync"=>date('d M, Y h:ia', strtotime($this->last_sync)),
+            "lgaName"=>$this->getLGA->lga_name ?? ''
         ];
     }
 }
