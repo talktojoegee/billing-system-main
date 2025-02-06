@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DepreciationResource extends JsonResource
+class ChargeRateResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,11 +15,8 @@ class DepreciationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-          "id"=>$this->id,
-          "range"=>$this->range,
-          //"ageTo"=>$this->building_age_to,
-          "rate"=>$this->depreciation_rate,
-          "value"=>$this->value,
+          "rate"=>$this->rate,
+          "occupancy"=>$this->occupancy,
         ];
     }
 }

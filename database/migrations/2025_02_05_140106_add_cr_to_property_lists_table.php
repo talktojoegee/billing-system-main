@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('depreciations', function (Blueprint $table) {
-            $table->id();
-            $table->string('range')->default(0);
-            //$table->integer('building_age_to')->default(0);
-            $table->double('depreciation_rate')->default(0);
-            $table->timestamps();
+        Schema::table('property_lists', function (Blueprint $table) {
+            $table->double('cr')->nullable();
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('depreciations');
+        Schema::table('property_lists', function (Blueprint $table) {
+            //
+        });
     }
 };
