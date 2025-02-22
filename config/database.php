@@ -82,12 +82,36 @@ return [
             ]) : [],
         ],
         'pgsql' => [
-
+            'driver' => 'pgsql',
+            'url' => env('DB_PGS_URL'),
+            'host' => env('DB_PGS_HOST', 'db-postgresql-nyc3-58857-do-user-16046040-0.d.db.ondigitalocean.com'),
+            'port' => env('DB_PGS_PORT', '25060'),
+            'database' => env('DB_PGS_DATABASE', 'kslas'),
+            'username' => env('DB_PGS_USERNAME', 'doadmin'),
+            'password' => env('DB_PGS_PASSWORD', 'AVNS_MWclEPgtT5v3WJBX0cT'),
+            'charset' => env('DB_CHARSET', 'utf8'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => 'prefer',
+            'options'  => [
+                PDO::ATTR_TIMEOUT => 60, // Increase timeout to 30 seconds
+            ]
         ],
 
         'sqlsrv' => [
-
-
+            'driver' => 'sqlsrv',
+            'url' => env('DB_URL'),
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '1433'),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => env('DB_CHARSET', 'utf8'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            // 'encrypt' => env('DB_ENCRYPT', 'yes'),
+            // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
     ],
