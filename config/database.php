@@ -81,23 +81,7 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
-        'pgsql' => [
-            'driver' => 'pgsql',
-            'url' => env('DB_PGS_URL'),
-            'host' => env('DB_PGS_HOST', ''),
-            'port' => env('DB_PGS_PORT', ''),
-            'database' => env('DB_PGS_DATABASE', ''),
-            'username' => env('DB_PGS_USERNAME', ''),
-            'password' => env('DB_PGS_PASSWORD', ''),
-            'charset' => env('DB_CHARSET', 'utf8'),
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'search_path' => 'public',
-            'sslmode' => 'prefer',
-            'options'  => [
-                PDO::ATTR_TIMEOUT => 60, // Increase timeout to 30 seconds
-            ]
-        ],
+        'pgsql' => [],
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
