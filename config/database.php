@@ -82,6 +82,21 @@ return [
             ]) : [],
         ],
         'pgsql' => [
+            'driver' => 'pgsql',
+            'url' => env('DB_PGS_URL'),
+            'host' => env('DB_PGS_HOST', 'db-postgresql-nyc3-58857-do-user-16046040-0.d.db.ondigitalocean.com'),
+            'port' => env('DB_PGS_PORT', '25060'),
+            'database' => env('DB_PGS_DATABASE', 'kslas'),
+            'username' => env('DB_PGS_USERNAME', 'doadmin'),
+            'password' => env('DB_PGS_PASSWORD', 'AVNS_MWclEPgtT5v3WJBX0cT'),
+            'charset' => env('DB_CHARSET', 'utf8'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => 'prefer',
+            'options'  => [
+                PDO::ATTR_TIMEOUT => 60, // Increase timeout to 30 seconds
+            ]
         ],
 
         'sqlsrv' => [
