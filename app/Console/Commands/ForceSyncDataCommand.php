@@ -1,42 +1,46 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Console\Commands;
 
+use App\Models\Billing;
 use App\Models\ChargeRate;
 use App\Models\Depreciation;
 use App\Models\Lga;
 use App\Models\PropertyAssessmentValue;
 use App\Models\PropertyClassification;
+use App\Models\PropertyDump;
 use App\Models\PropertyException;
 use App\Models\PropertyList;
 use App\Models\Zone;
 use App\Traits\UtilityTrait;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class SyncDataJob implements ShouldQueue
+class ForceSyncDataCommand extends Command
 {
-    use Queueable;
     use UtilityTrait;
     public $lgaId;
-    public $tries = 5;
-    public $timeout = 120;
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'forcely:syncdata';
 
     /**
-     * Create a new job instance.
+     * The console command description.
+     *
+     * @var string
      */
-    public function __construct($lga)
-    {
-        $this->lgaId = $lga;
-    }
+    protected $description = 'Command description';
 
     /**
-     * Execute the job.
+     * Execute the console command.
      */
+
+
     public function handle(): void
     {
         //$this->lgaId = 0;
@@ -52,7 +56,7 @@ class SyncDataJob implements ShouldQueue
                 })
                 ->where('completeness_status', 'Complete')
                 ->where('bill_sync', 0)
-                ->orderBy('id', 'DESC')
+                ->orderBy('id')
                 ->cursor()
                 ->each(function($record){
                     $lgaName = trim($record->lga);
@@ -104,16 +108,17 @@ class SyncDataJob implements ShouldQueue
                     $propertyUse = PropertyAssessmentValue::where('sync_word', $syncWord)->first();
 
                     if(empty($propertyList)){
-                        if (empty($lgaOne)  || empty($chargeRate) ||
+
+                        if (empty($lgaOne)  || empty($chargeRate) || empty($dep) ||
                             empty($zoneOne) || empty($propertyClassification) ||
-                            empty($propertyUse)
+                            empty($propertyUse) || empty($areaVal) || empty($classID)
                         ) {
                             $lgaReason = empty($lgaOne) ? 'LGA missing' : $lgaName;
                             $zoneReason = empty($zoneOne) ? 'Zone missing' : $record->zone;
                             $classReason = empty($propertyClassification) ? 'Prop. Class missing' : ($propertyClassification->class_name ?? 'Unknown');
                             $propUseReason = empty($propertyUse) ? 'Prop. Use missing' : ($propertyUse->sync_word ?? 'Unknown');
 
-                            $reason = $lgaReason." ".$zoneReason." ".$classReason." ".$propUseReason;
+                            $reason = $lgaReason." ".$zoneReason." ".$classReason." ".$propertyUse." ".$propUseReason;
                             PropertyException::create([
                                 'address'=>$record->street_nam,
                                 'area'=>!empty($areaVal) ? str_replace("_sqm", "", $areaVal) : 0,
@@ -234,10 +239,42 @@ class SyncDataJob implements ShouldQueue
                         }
 
                     }else{
-                        DB::connection('pgsql')
-                            ->table('Land_Admin_New_Form')
-                            ->where('id', $record->id)
-                            ->update(['bill_sync' => 1]);
+                        PropertyException::create([
+                            'address'=>$record->street_nam,
+                            'area'=>!empty($areaVal) ? str_replace("_sqm", "", $areaVal) : 0,
+                            'borehole'=>$record->water == 'Yes' ? 1 : 0,
+                            'building_code'=>$record->prop_id,
+                            'image'=>$record->photo_link,
+                            'owner_email'=>$record->owner_emai,
+                            'owner_gsm'=>$record->owner_phon,
+                            'owner_kgtin'=>$record->kgtin,
+                            'owner_name'=>$record->prop_owner,
+                            'title'=>$record->land_status,
+                            'pav_code'=>  null,
+                            'power'=>$record->power == 'Yes' ? 1 : 0,
+                            'storey'=> '',
+                            'water'=>$record->water == 'Yes' ? 1 : 0,
+                            'zone_name'=>$zoneChar ?? 'A',
+                            'sub_zone'=>$record->zone ?? 'A1',
+                            'class_name'=> $propertyClassification->class_name ?? '' ,
+                            'occupant'=>$record->prop_owner,
+                            'building_age'=>$record->property_age,
+                            'pay_status'=>null,
+                            'lga_id'=>!empty($lgaExist) && isset($lgaExist->id) ? $lgaExist->id : 1,
+                            'class_id'=> in_array($record->landuse, $classIds) ? $record->landuse : 1,
+                            'cr'=>$chargeRate->id ?? 1,
+                            'actual_age'=>$record->property_age,
+                            'longitude'=>$record->longitude,
+                            'latitude'=>$record->latitude,
+                            'property_name'=>$record->prop_name,
+                            'occupier'=>$record->occupier_s,
+                            'property_address'=>$record->prop_addre,
+                            'sync_word'=>$syncWord,
+                            'status'=>1,
+                            'property_use'=>$propertyUse->property_use ?? null,
+                            'dep_id'=> !empty($dep) ? $dep->id : Depreciation::orderBy('id', 'ASC')->first()->id, //depreciation
+                            'reason'=>"Already synchronized",
+                        ]);
                     }
                 });
 
@@ -350,9 +387,6 @@ class SyncDataJob implements ShouldQueue
             ->where('sync_word', $syncWord)
             ->first();
     }
+
+
 }
-
-
-
-
-
