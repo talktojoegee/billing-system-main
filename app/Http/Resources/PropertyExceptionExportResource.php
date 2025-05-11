@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PropertySearchResource extends JsonResource
+class PropertyExceptionExportResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,26 +14,19 @@ class PropertySearchResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
         return [
-            "id"=>$this->propertyId,
-            "date"=>date('d/m/Y', strtotime($this->created_at)),
-            "buildingCode"=>$this->buildingCode,
+            "buildingCode"=>$this->building_code,
             "owner"=>$this->owner_name ?? '',
             "pavCode"=>$this->pav_code,
-            "title"=>$this->title ?? '',
-            "lgaName"=>$this->lga_name ?? '',
-            "size"=>$this->size ?? '',
-            "area"=>$this->area ?? '',
             "zoneName"=>$this->sub_zone ?? '',
-            "ward"=>$this->ward ?? '',
-            "occupancy"=>$this->occupant ?? '',
+            "lgaName"=>$this->getLGA->lga_name ?? '',
             "class"=>$this->class_name ?? '',
             "propertyUse"=>$this->sync_word ?? '',
-            "reason"=>$this->reason ?? '',
-            "status"=>$this->status ?? '',
+            "occupancy"=>$this->occupant ?? '',
             "propertyName"=>$this->property_name ?? '',
+            "status"=>$this->status == 0 ? 'Not sync' : 'Sync',
+            "reason"=>$this->reason ?? '',
         ];
-
-
     }
 }
