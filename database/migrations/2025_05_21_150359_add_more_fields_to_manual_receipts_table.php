@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('billings', function (Blueprint $table) {
-            $table->tinyInteger('printed')->default(0)->comment('1=Printed,0=not');
+        Schema::table('manual_receipts', function (Blueprint $table) {
+            $table->string('url')->nullable();
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('billings', function (Blueprint $table) {
+        Schema::table('manual_receipts', function (Blueprint $table) {
             //
         });
     }

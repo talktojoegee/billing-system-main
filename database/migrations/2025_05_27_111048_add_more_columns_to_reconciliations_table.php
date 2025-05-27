@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('billings', function (Blueprint $table) {
-            $table->tinyInteger('printed')->default(0)->comment('1=Printed,0=not');
+        Schema::table('reconciliations', function (Blueprint $table) {
+            $table->string('assessment_no')->nullable()->after('entry_date');
+            $table->string('payer_name')->nullable()->after('entry_date');
+            $table->string('status')->default(0)->after('entry_date');
         });
     }
 
@@ -21,7 +23,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('billings', function (Blueprint $table) {
+        Schema::table('reconciliations', function (Blueprint $table) {
             //
         });
     }
