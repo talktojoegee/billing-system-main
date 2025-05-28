@@ -12,10 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('reconciliations', function (Blueprint $table) {
-            $table->string('assessment_no')->nullable()->after('entry_date');
-            $table->string('payer_name')->nullable()->after('entry_date');
-            $table->string('reconciled')->default(0)->comment('0=No,1=Yes')->after('entry_date');
-            $table->text('reason')->nullable()->after('entry_date');
+            $table->string('building_code')->after('assessment_no');
         });
     }
 
